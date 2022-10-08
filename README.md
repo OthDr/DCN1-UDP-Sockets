@@ -1,6 +1,6 @@
 #### **DCN1-UDP-Sockets**
 
-## **UDP Protocol based communication JAVA**
+## **User Datagram Protocol based communication JAVA**
 
 ### 1. DatagramPacket
    In UDP’s terms, data transferred is encapsulated in a unit called datagram. A datagram is an independent, self-contained message sent over the network.
