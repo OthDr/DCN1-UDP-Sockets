@@ -9,32 +9,32 @@ public class Server {
     static final int PORT = 4562;
 
     public static void main(String[] args) throws IOException {
-
-        DatagramSocket serverSocket = new DatagramSocket(PORT, InetAddress.getByName("localhost"));
-
-        // ******* Receiving *******
-        byte[] rcvBuffer = new byte[256];
-
-        DatagramPacket rcvPacket = new DatagramPacket(rcvBuffer, rcvBuffer.length);
-
-        // receiving Socket
-
-        System.out.println("Server is listening on port" + PORT);
-
-        InetAddress clientAddress = rcvPacket.getAddress();
-
-        if (clientAddress != null) {
-            System.out.println("A client has requested: IP=" + clientAddress);
-        }
+        DatagramSocket serverSocket = new DatagramSocket(PORT);
+        byte[] rcvData = new byte[1024];
+        byte[] sendData = new byte[1024];
+        System.out.println("Server listening on port: "+PORT);
 
         while (true) {
-            //wait for packet
+            DatagramPacket rcvPacket = new DatagramPacket(rcvData, rcvData.length);
             serverSocket.receive(rcvPacket);
-            String rcvMessage = new String(rcvBuffer, rcvBuffer.length);
+            String rcvMessage = new String(rcvPacket.getData());
             System.out.println("client: " + rcvMessage);
-            //serverSocket.send(new DatagramPacket(rcvMessage.getBytes(), rcvMessage.length()));
-
-
+            InetAddress IPAddress = rcvPacket.getAddress();
+            int port = rcvPacket.getPort();
+            /*String capitalizedSentence = message.toUpperCase();
+            sendData = capitalizedSentence.getBytes();*/
+            String echoMessage = " echo=> "+rcvMessage;
+            sendData = echoMessage.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+            serverSocket.send(sendPacket);
+            if(rcvMessage.contains("bye")){
+                String bye = "bye";
+                serverSocket.send(new DatagramPacket(bye.getBytes(), bye.getBytes().length, IPAddress, port));
+                serverSocket.close();
+            }
+            sendData = null;
+            rcvPacket = null;
+            sendPacket = null;
         }
     }
 }

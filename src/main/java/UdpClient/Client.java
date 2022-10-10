@@ -1,11 +1,11 @@
 package UdpClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
 public class Client {
 
@@ -13,50 +13,34 @@ public class Client {
     static final int PORT = 4562;
 
     public static void main(String[] args) throws IOException {
-
-
-        //********************** SENDING ***********************
-
-        // get the address off destination host
-        InetAddress address;
-        try {
-            //address = InetAddress.getByName("rainbow.essi.fr");
-            address = InetAddress.getByName("localhost"); //for 127.0.0.1 IP
-            System.out.println(address);
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-        String strMessage = "mon message";
-        int msgLength = strMessage.length();
-        byte[] message = new byte[msgLength];
-        System.out.println(message[1]);
-
+        BufferedReader scanBuffer = new BufferedReader(new InputStreamReader(System.in));
         DatagramSocket clientSocket = new DatagramSocket();
+        InetAddress IPAddress = InetAddress.getByName("localhost");
+        byte[] sendData = new byte[1024];
+        byte[] rcvData = new byte[1024];
 
-        DatagramPacket packet = new DatagramPacket(message, msgLength, address, PORT);
-
-        clientSocket.send(packet);
-
-        System.out.println(address + " port=" + packet.getPort());
-
-
-// ************************* RECEIVE *********************************
-
-        byte[] rcvBuffer = new byte[1024];
-
-        DatagramPacket rcvPacket = new DatagramPacket(rcvBuffer, rcvBuffer.length);
-
-        // receiving Socket
-
+        System.out.print(">>");
 
         while (true) {
-            //scan from keyboard
-            // ... scanner here
-            //send scanned message to the server
-            //wait for packet
+            String scannerMessage = scanBuffer.readLine();
+            sendData = scannerMessage.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, PORT);
+            clientSocket.send(sendPacket);
+            DatagramPacket rcvPacket = new DatagramPacket(rcvData, rcvData.length);
             clientSocket.receive(rcvPacket);
-            String rcvMessage = new String(rcvBuffer, rcvBuffer.length);
+            String rcvMessage = new String(rcvPacket.getData());
+            System.out.println("Server: " + rcvMessage);
+
+            if (rcvMessage.contains("bye")) {
+                clientSocket.close();
+            }
+
+            System.out.print(">>");
+            sendData = null;
+            rcvPacket = null;
+            sendPacket = null;
         }
+
     }
 
 
