@@ -7,7 +7,7 @@ import java.net.InetAddress;
 
 public class Server {
     static final int PORT = 4562;
-    
+
     public static void main(String[] args) throws IOException {
         DatagramSocket serverSocket = new DatagramSocket(PORT);
         byte[] rcvData = new byte[1024];
