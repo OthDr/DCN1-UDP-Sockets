@@ -8,10 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class Client {
-
-
     static final int PORT = 4562;
-
     public static void main(String[] args) throws IOException {
         BufferedReader scanBuffer = new BufferedReader(new InputStreamReader(System.in));
         DatagramSocket clientSocket = new DatagramSocket();

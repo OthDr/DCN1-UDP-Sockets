@@ -7,7 +7,7 @@ import java.net.InetAddress;
 
 public class Server {
     static final int PORT = 4562;
-
+    
     public static void main(String[] args) throws IOException {
         DatagramSocket serverSocket = new DatagramSocket(PORT);
         byte[] rcvData = new byte[1024];
@@ -27,6 +27,7 @@ public class Server {
             sendData = echoMessage.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
             serverSocket.send(sendPacket);
+
             if(rcvMessage.contains("bye")){
                 String bye = "bye";
                 serverSocket.send(new DatagramPacket(bye.getBytes(), bye.getBytes().length, IPAddress, port));
